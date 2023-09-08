@@ -2,33 +2,62 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthSystem : MonoBehaviour, Damageable
+public class HealthSystem : MonoBehaviour
 {
     public int maxHealth = 100;
-    private int currentHealth;
+    public int currentHealth;
 
-    // Initialize current health to the max health when the object is created.
-    void Start()
+    private void Start()
     {
         currentHealth = maxHealth;
     }
 
-    public void TakeDamage(int damageAmount)
+    private void Update()
     {
-        // Reduce the current health by the damage amount.
-        currentHealth -= damageAmount;
+        if (Input.GetMouseButtonDown(0)) // Change this to your desired input for attacking (e.g., shooting).
+        {
+            ShootRaycast();
+        }
+    }
 
-        // Check if the object has been destroyed.
+    private void ShootRaycast()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 origin = transform.position;
+        Vector2 direction = mousePosition - transform.position;
+
+        // Cast a ray from the object to the mouse position.
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction, Mathf.Infinity);
+
+        if (hit.collider != null)
+        {
+            // Check if the hit object has a HealthSystem component.
+            HealthSystem targetHealth = hit.collider.GetComponent<HealthSystem>();
+
+            if (targetHealth != null)
+            {
+                // Apply damage to the target's health.
+                targetHealth.TakeDamage(10); // You can adjust the damage value as needed.
+            }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        // Check if the object is destroyed.
         if (currentHealth <= 0)
         {
             Die();
         }
     }
 
-    void Die()
+    private void Die()
     {
-        // Perform any death-related actions here.
-        // For example, destroy the object or play an animation.
+        // Perform death-related actions (e.g., destroy the GameObject).
         Destroy(gameObject);
     }
 }
+
