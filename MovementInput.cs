@@ -23,6 +23,7 @@ public class Player : MonoBehaviour {
         gravity = -(2 * jumpHeight) / Mathf.Pow (timeToJumpApex, 2);
         jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
         print ("Gravity: " + gravity + "  Jump Velocity: " + jumpVelocity);
+
     }
 
     void Update() {
@@ -41,5 +42,6 @@ public class Player : MonoBehaviour {
         velocity.x = Mathf.SmoothDamp (velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below)?accelerationTimeGrounded:accelerationTimeAirborne);
         velocity.y += gravity * Time.deltaTime;
         controller.Move (velocity * Time.deltaTime);
+        
     }
 }
