@@ -20,27 +20,29 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
-    private void ShootRaycast()
+    rivate void ShootRaycast()
+{
+    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    Vector2 origin = transform.position;
+    
+    // Calculate the direction from the object to the mouse position.
+    Vector2 direction = (mousePosition - transform.position).normalized;
+
+    // Cast a ray from the object in the calculated direction.
+    RaycastHit2D hit = Physics2D.Raycast(origin, direction, Mathf.Infinity);
+
+    if (hit.collider != null)
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 origin = transform.position;
-        Vector2 direction = mousePosition - transform.position;
+        // Check if the hit object has a HealthSystem component.
+        HealthSystem targetHealth = hit.collider.GetComponent<HealthSystem>();
 
-        // Cast a ray from the object to the mouse position.
-        RaycastHit2D hit = Physics2D.Raycast(origin, direction, Mathf.Infinity);
-
-        if (hit.collider != null)
+        if (targetHealth != null)
         {
-            // Check if the hit object has a HealthSystem component.
-            HealthSystem targetHealth = hit.collider.GetComponent<HealthSystem>();
-
-            if (targetHealth != null)
-            {
-                // Apply damage to the target's health.
-                targetHealth.TakeDamage(10); // You can adjust the damage value as needed.
-            }
+            // Apply damage to the target's health.
+            targetHealth.TakeDamage(10); // You can adjust the damage value as needed.
         }
     }
+}
 
     public void TakeDamage(int damage)
     {
@@ -56,8 +58,11 @@ public class HealthSystem : MonoBehaviour
 
     private void Die()
     {
+        print died
+
         // Perform death-related actions (e.g., destroy the GameObject).
         Destroy(gameObject);
     }
+    
 }
 
